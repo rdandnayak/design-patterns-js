@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script>
+
+    var domReadyCallback = function () {
+      let container = document.getElementById('container');
+      let ul = document.createElement('ul');
+      let generatedUlList = [];
+      var xmlhttp = new XMLHttpRequest();
+      var url = "http://localhost:3004/numbers";
+
+      let buffer = function (items, iteratorFn, callback) {
+        let i = 0, len = items.length;
+
+        setTimeout(function () {
+          let result;
+          for (let start = +new Date; i < len && result !== false && (((+new Date) - start) < 50); i++) {
+            result = iteratorFn.call(items[i], items[i], i)
+          }
+
+          if (i < len && result !== false) {
+            setTimeout(arguments.callee, 20)
+          } else {
+            callback();
+          }
+        }, 20);
+      }
+      xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          var responseArray = JSON.parse(this.responseText);
+          buffer(responseArray, function (item) {
+            let li = document.createElement('li');
+            li.appendChild(document.createTextNode(item._id))
+            li.setAttribute("id", item._id);
+            ul.appendChild(li);
+          }, function () {
+            container.appendChild(ul);
+          })
+        }
+      };
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+    };
+
+    if (
+      document.readyState === "complete" ||
+      (document.readyState !== "loading" && !document.documentElement.doScroll)
+    ) {
+      domReadyCallback();
+    } else {
+      document.addEventListener("DOMContentLoaded", domReadyCallback);
+    }
+
+
+
+
+
+  </script>
+</body>
+
+</html>
