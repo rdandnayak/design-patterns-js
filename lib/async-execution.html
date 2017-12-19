@@ -21,7 +21,6 @@
 
       let buffer = function (items, iteratorFn, callback) {
         let i = 0, len = items.length;
-
         setTimeout(function () {
           let result;
           for (let start = +new Date; i < len && result !== false && (((+new Date) - start) < 50); i++) {
